@@ -1,0 +1,11 @@
+server
+{
+        listen                   8017;
+        server_name              localhost;
+	charset utf-8,gbk,gb2312,gb18030; #可以实现多种编码识别
+        error_page 411 = @my_error;
+        location @my_error {
+        }
+        root /home/wy/www/down_loads/;
+	autoindex on;
+}

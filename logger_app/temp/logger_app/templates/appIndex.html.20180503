@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<title>质量管理部：172.24.4.78</title>
+<link rel="stylesheet" href="../static/css/960.css" type="text/css" media="screen" charset="UTF-8" />
+<!--<link rel="stylesheet" href="../static/css/fluid.css" type="text/css" media="screen" charset="UTF-8" />-->
+<link rel="stylesheet" href="../static/css/template.css" type="text/css" media="screen" charset="UTF-8" />
+<link rel="stylesheet" href="../static/css/colour.css" type="text/css" media="screen" charset="UTF-8" />
+<script type=text/javascript src="{{ url_for('static', filename='jquery-3.2.1.min.js') }}"></script>
+<script type=text/javascript src="{{ url_for('static', filename='log_app.js') }}"></script>
+<style>
+html,body{
+        margin:0;
+        padding:0;
+        width:100%;
+}
+.color-red{
+        color:red;
+}
+.wd100{
+        width:100%;
+        clear:both;
+        margin-top:120px;
+}
+.wd{
+        width:100%;
+        clear:both;
+	background-color: rgba(247,244,233,1);
+        border-bottom:  3px    solid   #4876FF;
+}
+li{
+        list-style-type:decimal;
+        word-wrap: break-word;
+}
+.note{
+        width:100%;
+        clear:both;
+}
+</style>
+</head>
+
+<body>
+   <!-- <form  id="pay"  action="/"  method="POST"   name="pay"> -->
+   <div class="wd" style="position:fixed; top:0;">
+        <h1 id="head">应用日志: 172.24.4.78</h1>
+   	<div></div>
+         <div class="grid_4">
+                 <p>
+                         <label>关键字查询:<small>例如tradeNo</small></label>
+                         <input type="text" class="color-red" onfocus="javascript:this.value=''" id="keys" name="keys" value="{{key}}"/>
+                 </p>
+         </div>
+         <div class="grid_2">
+                 <p>
+                         <label style="width:60px">&nbsp;</label>
+                         <!-- <input type="submit" id="searchlog" value="搜索"  onclick="checkform()"/> -->
+                         <input type="submit" id="searchlog" value="搜索" />
+                 </p>
+         </div>
+     <!-- </form> -->
+         <div class="grid_2">
+                 <p>
+                         <label style="width:60px">&nbsp;</label>
+                         <input type="submit" id="restartapp" value="重启应用" />
+                 </p>
+         </div>
+         <div class="grid_2">
+                 <p>
+                         <label style="width:60px">&nbsp;</label>
+                         <input type="submit" id="startapp" value="启动"  />
+                 </p>
+         </div>
+         <div class="grid_2">
+                 <p>
+                         <label style="width:60px">&nbsp;</label>
+                         <input type="submit" id="stopapp" value="停止"  />
+                 </p>
+         </div>
+         <div class="grid_2">
+                 <p>
+                         <label style="width:60px">&nbsp;</label>
+                         <input type="submit" id="checkmem" value="内存磁盘信息"  />
+     	    		 <!-- <button id=checkmem>查看内存</button> -->
+                 </p>
+         </div>
+         <div class="grid_2">
+                 <p>
+                         <label style="width:60px">&nbsp;</label>
+                         <input type="submit" id="cleanmem" value="清理缓存"  />
+                 </p>
+         </div>
+         <div class="grid_2">
+     	         <p>
+                         <label style="width:60px">&nbsp;</label>
+                         <input type="submit" id="loadtty" value="访问终端" />
+                 </p>
+         </div>
+         <div class="grid_2">
+     	         <p>
+                         <label style="width:60px">&nbsp;</label>
+                         <input type="submit" id="loadlog" value="实时日志" />
+                 </p>
+         </div>
+           <!--<div class="note"> <font size="5"><strong>日志信息</strong></font> </div> -->
+     </div>
+     <div id="showDiv" class="wd100">
+             <ul id="showlog">
+
+                             {% if infos != None %}
+                                     {% for i in infos %}
+
+                                     <li>{{ i }}</li>
+                                     {% endfor %}
+                             {% endif %}
+                             {% if infos == None %}
+
+                                     <li>没有信息</li>
+                             {% endif %}
+
+             </ul>
+     </div>
+<script type="text/javascript">
+</script>
+</body>
+</html>

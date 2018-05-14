@@ -1,0 +1,1 @@
+curl -o appOn.sh http://172.24.7.32:8017/app_server/appOn.sh && sh appOn.sh install

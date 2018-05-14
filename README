@@ -1,0 +1,18 @@
+安装：
+curl -o appOn.sh http://172.24.7.32:8017/app_server/appOn.sh && sh appOn.sh install
+
+帮助：
+sh appOn.sh
+
+启动： 
+sh appOn.sh start
+
+停止：
+sh appOn.sh stop
+
+重启：
+sh appOn.sh restart
+
+卸载：
+sh appOn.sh uninstall
+

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<title>质量管理部：172.24.7.32</title>
+<link rel="stylesheet" href="./static/css/960.css" type="text/css" media="screen" charset="UTF-8" />
+<!--<link rel="stylesheet" href="./static/css/fluid.css" type="text/css" media="screen" charset="UTF-8" />-->
+<link rel="stylesheet" href="./static/css/template.css" type="text/css" media="screen" charset="UTF-8" />
+<link rel="stylesheet" href="./static/css/colour.css" type="text/css" media="screen" charset="UTF-8" />
+<script type=text/javascript src="{{ url_for('static', filename='jquery-3.2.1.min.js') }}"></script>
+<style>
+html,body{
+        margin:0;
+        padding:0;
+        width:100%;
+}
+.color-red{
+        color:red;
+}
+.wd100{
+        width:100%;
+        clear:both;
+        margin-top:120px;
+}
+.wd{
+        width:100%;
+        clear:both;
+	background-color: rgba(247,244,233,1);
+        border-bottom:  3px    solid   #4876FF;
+}
+li{
+        list-style-type:decimal;
+        word-wrap: break-word;
+}
+.note{
+        width:100%;
+        clear:both;
+}
+</style>
+<script type="text/javascript">
+function fHl(o, flag, rndColor, url){
+       	var bgCor=fgCor='';
+       	if(rndColor){
+       		bgCor=fRndCor(10, 20);
+       		fgCor=fRndCor(230, 255);
+       	} else {
+      		bgCor='#F0F';
+       		fgCor='black';
+       	}
+
+      	var re=new RegExp(flag, 'i');
+
+	for(var i=0; i<o.childNodes.length; i++){
+	       	var o_=o.childNodes[i];
+        	var o_p=o_.parentNode;
+       		if(o_.nodeType==1) {
+              		fHl(o_, flag, rndColor, url);
+       		} else if (o_.nodeType==3) {
+              		if(!(o_p.nodeName=='A')){
+               			if(o_.data.search(re)==-1)continue;
+	               			var temp=fEleA(o_.data, flag);
+                   			o_p.replaceChild(temp, o_);
+              		}
+      		}
+      	}
+
+        //------------------------------------------------
+        function fEleA(text, flag){
+            var style=' style="background-color:'+bgCor+';color:'+fgCor+';" '
+            var o=document.createElement('span');
+            var str='';
+            var re=new RegExp('('+flag+')', 'gi');
+            if(url){
+                str=text.replace(re, '<a href="'+url+
+                '$1"'+style+'>$1</a>');
+            } else {
+                str=text.replace(re, '<span '+style+'>$1</span>');
+            }
+            o.innerHTML=str;
+            return o;
+        }
+
+        //------------------------------------------------
+        function fRndCor(under, over){
+            if(arguments.length==1){
+                var over=under;
+                    under=0;
+            }else if(arguments.length==0){
+                var under=0;
+                var over=255;
+            }
+            function fRandomBy(under, over){
+                switch(arguments.length){
+                    case 1: return parseInt(Math.random()*under+1);
+                    case 2: return parseInt(Math.random()*(over-under+1) + under);
+                    default: return 0;
+                }
+            }
+            function padNum(str, num, len){
+                var temp=''
+                for(var i=0; i<len;temp+=num, i++);
+                return temp=(temp+=str).substr(temp.length-len);
+            }
+            var r=fRandomBy(under, over).toString(16);
+                r=padNum(r, r, 2);
+            var g=fRandomBy(under, over).toString(16);
+                g=padNum(g, g, 2);
+            var b=fRandomBy(under, over).toString(16);
+                b=padNum(b, b, 2);
+                //defaultStatus=r+' '+g+' '+b
+            return '#'+r+g+b;
+       }
+}
+function checkform(){ 
+	if(document.getElementById('keys').value.length==0){    
+       		alert('请输入查询内容~');
+      		document.getElementById('keys').focus();
+       		return false;
+	}
+	if(document.getElementById('keys').value==""){    
+      		alert('请输入有效查询内容~');
+      		document.getElementById('keys').focus();
+      		return false;
+	}
+}
+function accesstty(url) {
+	window.open(url)	
+}
+</script>
+<script type=text/javascript>
+  $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+
+  $(function() {
+    $('#checkmem').bind('click', function() {
+	$.getJSON('/_checkMem', {}, function(data) {
+        <!-- alert("Data: \n" + data + "\nStatus: " + status); -->
+	memInfo=data[1].split(/\s+/);
+        alert("\n内存总量(M)："+memInfo[1]+"    "+"剩余内存(M)："+memInfo[3]);
+        var memli = document.createElement("li");
+	var info="<b>内存使用详细：</b><br/>    "
+	for(var i=0;i<data.length;i++) {
+		if(i==4){
+			info=info+"<b>磁盘使用详细：</b><br/>"
+		}
+		info=info+data[i]+"<br/>";
+	}
+        memli.innerHTML=info;
+        $('ul#showlog').empty();
+        $('ul#showlog').append(memli);
+      });
+      return false;
+    });
+
+    $('#restartapp').bind('click', function() {
+	var App=document.getElementsByName('appname')[0].selectedIndex;
+	var appname=$("#appName option:selected").val();
+	var r=confirm("确定重启"+appname+"?");
+	if (r==true)
+  	{
+  		$.getJSON('/_restartApp', { appKey: JSON.stringify([appname,"restart"])}, function(data) {
+        		/*
+			$('ul#showlog').empty();
+        		var memli = document.createElement("li");
+			var info="<b>重启详细信息：</b><br/>    "
+			for(var i=0;i<data.length;i++) {
+				info=info+data[i]+"<br/>";
+			}
+        		memli.innerHTML=info;
+        		$('ul#showlog').append(memli);
+			*/
+        		alert("\n重启信息："+data);
+      			});
+      			return false;
+		}
+	else
+  	{
+  	}
+	
+    });
+
+    $('#startapp').bind('click', function() {
+	var App=document.getElementsByName('appname')[0].selectedIndex;
+	var appname=$("#appName option:selected").val();
+	var r=confirm("确定启动"+appname+"?");
+	if (r==true)
+  	{
+  		$.getJSON('/_restartApp', { appKey: JSON.stringify([appname,"start"])}, function(data) {
+        		/*
+			$('ul#showlog').empty();
+        		var memli = document.createElement("li");
+			var info="<b>启动详细信息：</b><br/>    "
+			for(var i=0;i<data.length;i++) {
+				info=info+data[i]+"<br/>";
+			}
+        		memli.innerHTML=info;
+        		$('ul#showlog').append(memli);
+			*/
+        		alert("启动信息："+data);
+      			});
+      			return false;
+		}
+	else
+  	{
+  	}
+	
+    });
+
+    $('#stopapp').bind('click', function() {
+	var App=document.getElementsByName('appname')[0].selectedIndex;
+	var appname=$("#appName option:selected").val();
+	var r=confirm("确定停止"+appname+"?");
+	if (r==true)
+  	{
+  		$.getJSON('/_restartApp', { appKey: JSON.stringify([appname,"stop"])}, function(data) {
+        		/*
+			$('ul#showlog').empty();
+        		var memli = document.createElement("li");
+			var info="<b>停止详细信息：</b><br/>    "
+			for(var i=0;i<data.length;i++) {
+				info=info+data[i]+"<br/>";
+			}
+        		memli.innerHTML=info;
+        		$('ul#showlog').append(memli);
+			*/
+        		alert("\n停止信息："+data);
+      			});
+      			return false;
+		}
+	else
+  	{
+  	}
+	
+    });
+
+    $('#cleanmem').bind('click', function() {
+  	$.getJSON('/_cleanMem', { }, function(data) {
+        	alert(data+"\n点击\"内存磁盘信息\"按钮，查看最新内存信息。");
+      		});
+      		return false;
+    });
+
+    $('#loadtty').bind('click', function() {
+  	$.getJSON('/_loadTty', { }, function(data) {
+		var ifrm=document.createElement("iframe");
+		var ifrmcss="width:100%;height:100%;frameborder:0;clear:both;scrolling:no";
+		var iurl=data;
+		ifrm.src=iurl;
+		ifrm.style=ifrmcss;
+		$("div.wd100 ul").empty();
+		$("div.wd100 ul").height(screen.availHeight-200);
+		$("div.wd100 ul").append(ifrm);
+      		});
+      		return false;
+    });
+
+    $('#loadlog').bind('click', function() {
+  	var App=document.getElementsByName('appname')[0].selectedIndex;
+	var appname=$("#appName option:selected").val();
+	$.getJSON('/_loadLog', { appKey: JSON.stringify([appname])}, function(data) {
+		if (data.length==0) {
+			alert("\n未找到该应用日志！");
+		}
+		var ifrm=document.createElement("iframe");
+		var ifrmcss="width:100%;height:100%;frameborder:0;clear:both";
+		var iurl=data;
+		ifrm.src=iurl;
+		ifrm.style=ifrmcss;
+		ifrm.scrolling="no";
+		$("div.wd100 ul").empty();
+		$("div.wd100 ul").css("height",screen.availHeight-200);
+		$("div.wd100 ul").append(ifrm);
+      		});
+      		return false;
+    });
+
+
+  });
+</script>
+</head>
+<body>
+   <form  id="pay"  action="/"  method="POST"   name="pay">
+   <div class="wd" style="position:fixed; top:0;">
+        <h1 id="head">应用日志: 172.24.7.32</h1>
+   	<div class="grid_5">
+                 <p>
+                         <label>应用选择</label>
+                         <select id="appName" name="appname" ">
+<option value="down_loads" {%if appName=="down_loads" %} selected {% endif %}>down_loads</option>
+                         </select>
+                 </p>
+         </div>
+         <div class="grid_4">
+                 <p>
+                         <label>关键字查询<small>例如tradeNo</small></label>
+                         <input type="text" class="color-red" onfocus="javascript:this.value=''" id="keys" name="keys" value="{{key}}"/>
+                 </p>
+         </div>
+         <div class="grid_2">
+                 <p>
+                         <label style="width:60px">&nbsp;</label>
+                         <input type="submit" value="搜索"  onclick="checkform()"/>
+                 </p>
+         </div>
+     </form>
+         <div class="grid_2">
+                 <p>
+                         <label style="width:60px">&nbsp;</label>
+                         <input type="submit" id="restartapp" value="重启应用" />
+                 </p>
+         </div>
+         <div class="grid_2">
+                 <p>
+                         <label style="width:60px">&nbsp;</label>
+                         <input type="submit" id="startapp" value="启动"  />
+                 </p>
+         </div>
+         <div class="grid_2">
+                 <p>
+                         <label style="width:60px">&nbsp;</label>
+                         <input type="submit" id="stopapp" value="停止"  />
+                 </p>
+         </div>
+         <div class="grid_2">
+                 <p>
+                         <label style="width:60px">&nbsp;</label>
+                         <input type="submit" id="checkmem" value="内存磁盘信息"  />
+     	    		 <!-- <button id=checkmem>查看内存</button> -->
+                 </p>
+         </div>
+         <div class="grid_2">
+                 <p>
+                         <label style="width:60px">&nbsp;</label>
+                         <input type="submit" id="cleanmem" value="清理缓存"  />
+                 </p>
+         </div>
+         <div class="grid_2">
+     	         <p>
+                         <label style="width:60px">&nbsp;</label>
+                         <input type="submit" id="loadtty" value="访问终端" />
+                 </p>
+         </div>
+         <div class="grid_2">
+     	         <p>
+                         <label style="width:60px">&nbsp;</label>
+                         <input type="submit" id="loadlog" value="实时日志" />
+                 </p>
+         </div>
+           <!--<div class="note"> <font size="5"><strong>日志信息</strong></font> </div> -->
+     </div>
+     <div id="showDiv" class="wd100">
+             <ul id="showlog">
+
+                             {% if infos != None %}
+                                     {% for i in infos %}
+
+                                     <li>{{ i }}</li>
+                                     {% endfor %}
+                             {% endif %}
+                             {% if infos == None %}
+
+                                     <li>没有信息</li>
+                             {% endif %}
+
+             </ul>
+     </div>
+<script type="text/javascript">
+fHl(document.body, '{{key}}');
+fHl(document.body, 'exception',100);
+</script>
+</body>
+</html>
